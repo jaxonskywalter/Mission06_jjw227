@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Yeah Right";
+}
+
+@model DateMe.Models.ApplicationResponse
+
+@if (Model.Category == "Jaxon")
+{
+    <h2>Of course you can date Maddy! You already are silly ass goose.</h2>
+}
+else
+{
+    <h1>Go to actual Hell.</h1>
+    <h2>Application denied. In fact, @Model.Category, it was never even considered you ass hat.</h2>
+}
+
+
+
