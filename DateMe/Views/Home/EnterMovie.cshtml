@@ -9,19 +9,19 @@
 <div>
     <form method="post">
         <label asp-for="Category">Category:</label>
-        <input asp-for="Category" /><br />
+        <input asp-for="Category" required/><br />
         <label asp-for="Title">Title:</label>
-        <input asp-for="Title" /><br />
+        <input asp-for="Title" required/><br />
         <label asp-for="Year">Year:</label>
-        <input asp-for="Year" /><br />
+        <input asp-for="Year" required/><br />
         <label asp-for="Director">Director:</label>
-        <input asp-for="Director" /><br />
+        <input asp-for="Director" required/><br />
         <label asp-for="Rating"></label>
-        <select asp-for="Rating" />
-        <option>G</option>
-        <option>PG</option>
-        <option>PG-13</option>
-        <option>R</option>
+        <select asp-for="Rating" required/>
+        <option value="G">G</option>
+        <option value="PG">PG</option>
+        <option value="PG13">PG-13</option>
+        <option value="R">R</option>
         </select><br />
         <label asp-for="Edited"></label>
         <select asp-for="Edited" />
