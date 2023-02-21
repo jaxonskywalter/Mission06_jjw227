@@ -2,14 +2,16 @@
 using DateMe.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DateMe.Migrations
 {
     [DbContext(typeof(EnterMovieContext))]
-    partial class EnterMovieContextModelSnapshot : ModelSnapshot
+    [Migration("20230221153409_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +73,7 @@ namespace DateMe.Migrations
                         new
                         {
                             SubmissionId = 2,
-                            CategoryId = 5,
+                            CategoryId = 2,
                             Director = "Mark Mylod",
                             Edited = false,
                             LentTo = "",
@@ -83,7 +85,7 @@ namespace DateMe.Migrations
                         new
                         {
                             SubmissionId = 3,
-                            CategoryId = 1,
+                            CategoryId = 3,
                             Director = "Gareth Edwards",
                             Edited = true,
                             LentTo = "",

@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DateMe.Migrations
 {
     [DbContext(typeof(EnterMovieContext))]
-    [Migration("20230214072705_Initial")]
-    partial class Initial
+    [Migration("20230221153905_second")]
+    partial class second
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,8 @@ namespace DateMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .IsRequired()
@@ -54,13 +53,15 @@ namespace DateMe.Migrations
 
                     b.HasKey("SubmissionId");
 
-                    b.ToTable("responses");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Responses");
 
                     b.HasData(
                         new
                         {
                             SubmissionId = 1,
-                            Category = "Action",
+                            CategoryId = 1,
                             Director = "Christofer Nolan",
                             Edited = false,
                             LentTo = "",
@@ -72,7 +73,7 @@ namespace DateMe.Migrations
                         new
                         {
                             SubmissionId = 2,
-                            Category = "Horror",
+                            CategoryId = 5,
                             Director = "Mark Mylod",
                             Edited = false,
                             LentTo = "",
@@ -84,7 +85,7 @@ namespace DateMe.Migrations
                         new
                         {
                             SubmissionId = 3,
-                            Category = "SciFi",
+                            CategoryId = 1,
                             Director = "Gareth Edwards",
                             Edited = true,
                             LentTo = "",
@@ -93,6 +94,61 @@ namespace DateMe.Migrations
                             Title = "Rogue One",
                             Year = 2016
                         });
+                });
+
+            modelBuilder.Entity("DateMe.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Action/Adventure"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryName = "Family"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryName = "Horror/Suspense"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            CategoryName = "Miscellaneous"
+                        });
+                });
+
+            modelBuilder.Entity("DateMe.Models.ApplicationResponse", b =>
+                {
+                    b.HasOne("DateMe.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

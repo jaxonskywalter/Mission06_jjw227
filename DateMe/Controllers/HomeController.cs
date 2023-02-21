@@ -1,5 +1,6 @@
 ﻿using DateMe.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,11 @@ namespace DateMe.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private EnterMovieContext _blahContext { get; set; }
+        private EnterMovieContext movContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, EnterMovieContext someName)
+        public HomeController(EnterMovieContext someName)
         {
-            _logger = logger;
-            _blahContext = someName;
+            movContext = someName;
         }
 
         public IActionResult Index()
@@ -31,28 +30,87 @@ namespace DateMe.Controllers
         }
 
         [HttpGet]
-        public IActionResult EnterMovie ()
+        public IActionResult EnterMovie()
         {
+            ViewBag.Categories = movContext.Categories.ToList();
+
             return View();
         }
 
         [HttpPost]
         public IActionResult EnterMovie(ApplicationResponse ar)
         {
-            _blahContext.Add(ar);
-            _blahContext.SaveChanges();
-            return View("Confirmation", ar);
+            //makes sure the entries meet the critera through validation
+            if (ModelState.IsValid)
+            {
+                movContext.Add(ar);
+                movContext.SaveChanges();
+                return View("Confirmation", ar);
+            }
+            else
+            {
+                ViewBag.Categories = movContext.Categories.ToList();
+
+                return View(ar);
+            }
+           
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        public IActionResult MovieList ()
         {
-            return View();
+            //filters the database like sql
+            var submissions = movContext.Responses
+                .Include(x => x.Category)
+                .OrderBy(x => x.Title)
+                .ToList();
+
+            return View(submissions);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        //allows the edit page to fucntion the same as the enter movie page
+        [HttpGet]
+        public IActionResult Edit(int submissionid)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            ViewBag.Categories = movContext.Categories.ToList();
+
+            var submission = movContext.Responses.Single(x => x.SubmissionId == submissionid);
+
+            return View("EnterMovie", submission);
         }
+
+        [HttpPost]
+        public IActionResult Edit(ApplicationResponse ar)
+        {
+            if (ModelState.IsValid)
+            {
+                movContext.Update(ar);
+                movContext.SaveChanges();
+                return RedirectToAction("MovieList");
+            }
+            else
+            {
+                ViewBag.Categories = movContext.Categories.ToList();
+
+                return View("EnterMovie");
+            }
+        }
+        
+        [HttpGet]
+        public IActionResult Delete(int submissionid)
+        {
+            var submission = movContext.Responses.Single(x => x.SubmissionId == submissionid);
+
+            return View(submission);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(ApplicationResponse ar)
+        {
+            movContext.Responses.Remove(ar);
+            movContext.SaveChanges();
+            return RedirectToAction("MovieList");
+        }
+
     }
 }
